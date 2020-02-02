@@ -9,10 +9,9 @@ import random
 import numpy as np
 import tensorflow as tf
 import sys
-from ColAucDiff.input_fn import FormatData
-from ColAucDiff.model import FM
+from ColAucDiff.input_fn import ReadData, FormatData
+from ColAucDiff.fm_model import FM
 from Tools.config import read_config
-from ColAucDiff.rand_col_value import ReadData
 from Tools.auc import AUCUtil
 from tqdm import tqdm
 from Tools.logger import Logger
@@ -32,9 +31,9 @@ epochs = 15
 best_auc = 0.0
 
 
-def _eval(sess, model, test, fd, auc_op):
+def _eval(sess, model, test_len, fd, auc_op):
     global best_auc
-    batch_per_epoch = (len(test) + batch_size - 1) // batch_size
+    batch_per_epoch = (test_len + batch_size - 1) // batch_size
     for _ in range(batch_per_epoch):
         xs, ys, st = fd.next_test_batch(batch_size)
         arr = model.test(sess, xs, st, ys)
@@ -49,19 +48,16 @@ def _eval(sess, model, test, fd, auc_op):
 
 
 # --- step03: train data ---
-def train_epochs(train, test):
+def train_epochs(fd, idx_len, train_len, test_len):
     global best_auc
     print('*' * 16)
-    print(len(train), len(test))
+    print(train_len, test_len)
     print('*' * 16)
-    idx = rd.get_idx()
-    fd = FormatData(train, test, idx)
+
     auc_op = AUCUtil()
-    feature_hasher_size = len(idx)
-    model = FM(latent, learning_rate, l2, l1, feature_hasher_size)
+    model = FM(latent, learning_rate, l2, l1, idx_len)
 
     gpu_options = tf.GPUOptions(allow_growth=True)
-
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
         sess.run(tf.global_variables_initializer())
         sess.run(tf.local_variables_initializer())
@@ -69,7 +65,7 @@ def train_epochs(train, test):
         start_time = time.time()
         for i in range(epochs):
             loss_sum = 0.0
-            batch_per_epoch = (len(train) + batch_size - 1) // batch_size
+            batch_per_epoch = (train_len + batch_size - 1) // batch_size
             for _ in tqdm(range(batch_per_epoch)):
                 xs, ys, st = fd.next_train_batch(batch_size)
 
@@ -77,12 +73,13 @@ def train_epochs(train, test):
                 loss_sum += loss
 
                 if model.global_step.eval() % 1000 == 0:
-                    auc = _eval(sess, model, test, fd, auc_op)
+                    auc = _eval(sess, model, test_len, fd, auc_op)
                     logger.get_log().info('Epoch %d Global_step %d\tTrain_loss: %.5f\tTest_loss: %.5f\tEval_AUC: %.5f' %
-                                          (i, model.global_step.eval(), loss, auc['loss'], auc['auc']))
+                                          (i, model.global_step.eval(), loss_sum / 1000, auc['loss'], auc['auc']))
                     sys.stdout.flush()
-                    # loss_sum = 0.0
-            auc = _eval(sess, model, test, fd, auc_op)
+                    loss_sum = 0.0
+
+            auc = _eval(sess, model, test_len, fd, auc_op)
             logger.get_log().info('Epoch %d DONE\tCost time: %.2f Train_loss: %.5f\tTest_loss: %.5f\tEval_AUC: %.5f' % (
                 i, time.time() - start_time, loss_sum / batch_per_epoch, auc['loss'], auc['auc']))
 
@@ -100,21 +97,31 @@ def train_epochs(train, test):
 
 if __name__ == '__main__':
     logger = Logger('fm_auc_diff')
-    feature_info = read_config('../Config/feature_adult.yaml')
-    rd = ReadData('../Data/adult_uci/raw_adult_sample.tfrecord', feature_info, 2020)
-
+    sample = '../Data/adult_uci/raw_adult_sample.tfrecord'
+    config = '../Config/feature_adult.yaml'
+    feature_info = read_config(config)
     res_auc = {}
     res_aucdiff = {}
-    train_data, test_data = rd.rand_col()
-    res_auc['basic'] = train_epochs(train_data, test_data)
+
+    # read data
+    rd = ReadData(sample, feature_info, 2020)
+    idx = rd.get_idx()
+
+    # basic auc
+    train, test = rd.rand_col()
+    fd_tmp = FormatData(train, test, idx)
+    res_auc['basic'] = train_epochs(fd_tmp, len(idx), len(train), len(test))
     res_aucdiff['basic'] = 0
+
     for f in feature_info:
         train_data, test_data = rd.rand_col(f['feature_name'])
-        res_auc[f['feature_name']] = train_epochs(train_data, test_data)
+        fd_tmp = FormatData(train_data, test_data, idx)
+
+        res_auc[f['feature_name']] = train_epochs(fd_tmp, len(idx), len(train), len(test))
+
         res_aucdiff[f['feature_name']] = res_auc[f['feature_name']] - res_auc['basic']
 
     import pandas as pd
-
     df = pd.DataFrame([res_auc, res_aucdiff], index=['auc', 'auc_diff'])
     print(df)
     df.to_csv('../Result/ans02.csv')
