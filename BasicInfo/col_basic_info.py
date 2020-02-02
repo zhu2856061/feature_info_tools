@@ -16,6 +16,7 @@ def col_info(filename, feature_info, result_info):
     coverage_tmp = defaultdict(int)
     average_tmp = defaultdict(int)
     unique_tmp = defaultdict(set)
+    unique_count_tmp = defaultdict(defaultdict)
     for serialized_example in tf.python_io.tf_record_iterator(filename):
         example = tf.train.Example()
         example.ParseFromString(serialized_example)
@@ -26,6 +27,12 @@ def col_info(filename, feature_info, result_info):
             coverage_tmp[f['feature_name']] += 1 if len(tmp) >= 1 else 0
             average_tmp[f['feature_name']] += len(tmp)
             unique_tmp[f['feature_name']].update(set(tmp))
+            if f['value_type'] == 2:
+                unique_count_tmp[f['feature_name']][tmp[0]] += 1
+
+    unique_count = dict()
+    for k, v in unique_count_tmp.items():
+        unique_count[k] = sorted(v.items(), key=lambda _: _[1], reverse=False)
 
     coverage = dict()
     for k, v in coverage_tmp.items():
@@ -44,7 +51,6 @@ def col_info(filename, feature_info, result_info):
     df = pd.DataFrame([coverage, average, unique, unique_rate], index=['coverage', 'average', 'unique', 'unique_rate'])
     print(df)
     df.to_csv(result_info)
-    return coverage, average, unique, unique_rate
 
 
 if __name__ == '__main__':
