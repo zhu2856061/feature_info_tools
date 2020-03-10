@@ -1,0 +1,254 @@
+
+######################### feature Common Configurations #############################
+# slot 唯一标识码
+# feature_group 特征的field
+# feature_type 特征的类型，1: 用户特征  2: 物品特征  3: 上下文特征
+# value_type 特征的数据类型， 2: 字符型  3: 连续值（线性增幅）  4: 连续值（指数型增幅） 5: 字符数组  6: 字符有序数组 7: 时间戳型
+- slot: 1
+  feature_group: 1
+  feature_type: 2
+  feature_name: last_dtu
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 2
+  feature_group: 2
+  feature_type: 2
+  feature_name: sex
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 3
+  feature_group: 3
+  feature_type: 2
+  feature_name: last_log_city
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 4
+  feature_group: 4
+  feature_type: 2
+  feature_name: last_phone_level
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 5
+  feature_group: 5
+  feature_type: 2
+  feature_name: read_booknum
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 6
+  feature_group: 6
+  feature_type: 2
+  feature_name: click_list
+  value_type: 5
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 7
+  feature_group: 7
+  feature_type: 2
+  feature_name: read_list
+  value_type: 5
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 8
+  feature_group: 8
+  feature_type: 2
+  feature_name: shelf_list
+  value_type: 5
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 9
+  feature_group: 9
+  feature_type: 2
+  feature_name: search_list
+  value_type: 5
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 10
+  feature_group: 10
+  feature_type: 2
+  feature_name: hash_id
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 11
+  feature_group: 11
+  feature_type: 2
+  feature_name: first_category_id
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 12
+  feature_group: 12
+  feature_type: 2
+  feature_name: second_category_id
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 13
+  feature_group: 13
+  feature_type: 2
+  feature_name: author
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 14
+  feature_group: 14
+  feature_type: 2
+  feature_name: end_status
+  value_type: 2
+  disperse_num: 0
+  value_max: 0
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 15
+  feature_group: 15
+  feature_type: 2
+  feature_name: data_retain_next
+  value_type: 4
+  disperse_num: 10
+  value_max: 10000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 16
+  feature_group: 16
+  feature_type: 2
+  feature_name: data_retain_three
+  value_type: 4
+  disperse_num: 10
+  value_max: 10000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 17
+  feature_group: 17
+  feature_type: 2
+  feature_name: pv_times
+  value_type: 4
+  disperse_num: 30
+  value_max: 100000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 18
+  feature_group: 18
+  feature_type: 2
+  feature_name: vv_times
+  value_type: 4
+  disperse_num: 30
+  value_max: 50000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 19
+  feature_group: 19
+  feature_type: 2
+  feature_name: read_times
+  value_type: 4
+  disperse_num: 30
+  value_max: 10000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+- slot: 20
+  feature_group: 20
+  feature_type: 2
+  feature_name: shelf_times
+  value_type: 4
+  disperse_num: 30
+  value_max: 10000
+  value_min: 0
+  decribe: 用户id
+  status: 1
+  is_dump: 1
+
+
+
+
+
+
+
+
+

@@ -74,10 +74,10 @@ def train_epochs(fd, idx_len, train_len, test_len):
                 loss = model.train(sess, xs, st, ys)
                 loss_sum += loss
 
-                if model.global_step.eval() % 1000 == 0:
+                if model.global_step.eval() % 10000 == 0:
                     auc = _eval(sess, model, test_len, fd, auc_op)
                     logger.get_log().info('Epoch %d Global_step %d\tTrain_loss: %.5f\tTest_loss: %.5f\tEval_AUC: %.5f' %
-                                          (i, model.global_step.eval(), loss_sum / 1000, auc['loss'], auc['auc']))
+                                          (i, model.global_step.eval(), loss_sum / 10000, auc['loss'], auc['auc']))
                     sys.stdout.flush()
                     loss_sum = 0.0
 

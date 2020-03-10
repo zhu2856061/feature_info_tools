@@ -97,8 +97,8 @@ def train_epochs(fd, idx_len, train_len, test_len):
 
 if __name__ == '__main__':
     logger = Logger('fm_auc_diff')
-    sample = '../Data/adult_uci/raw_adult_sample.tfrecord'
-    config = '../Config/feature_adult.yaml'
+    sample = '../Data/midu/raw_sample.tfrecord'
+    config = '../Config/feature_midu.yaml'
     feature_info = read_config(config)
     res_auc = {}
     res_aucdiff = {}
